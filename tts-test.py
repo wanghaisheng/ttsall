@@ -95,7 +95,11 @@ def speak(content,rate,voice,voiceidx):
                 # fname=voice+'-'+str(voiceidx)+'-'+str(time.time())
                 fname=voice+'-'+str(voiceidx)
                 
-                if not os.path.exists('./results/'+fname+'.mp3'):                
+                if not os.path.exists('./results/'+fname+'.mp3'):
+                    print('file is not yet :','./results/'+fname+'.mp3')      
+                    sleep_time = random.uniform(1,3)
+                    print(f"Sleeping for {sleep_time} seconds...")
+                    time.sleep(sleep_time)                              
                     response = requests.post('https://translate.volcengine.com/crx/tts/v1/',  headers=headers, json= json_data,proxies={'http':None,'https':None}, timeout=timeout)
                     
                     # response = requests.post('https://translate.volcengine.com/crx/tts/v1/',  headers=headers, data= data,proxies={'http':None,'https':None}, timeout=timeout)
@@ -103,15 +107,18 @@ def speak(content,rate,voice,voiceidx):
                     response.raise_for_status()
                     print('Request successful!')
                     # print('Response:', response.text)
-                    if response.json()['audio']['data']:                
+                    try:
+                        result=response.json()['audio']['data']               
                         b64=base64.b64decode(response.json()['audio']['data'])
 
-                                
+                        
                         with open('./results/'+fname+'.mp3','wb') as ff:
                             ff.write(b64)
-                    else:
+                    except:
                         print('response content has no audio data filed',response.text)
                         retry_count += 1
+                        with open('./combines/failed.txt','a+') as ff:
+                            ff.write(voice+"\n")
                         break
                                 
                 return ('./results/'+fname+'.mp3')                
@@ -313,9 +320,7 @@ for speaker in supported_zh:
         text_contents=ff.readlines()   
     for idx,text in enumerate(text_contents):
         print(str(idx),text)
-        sleep_time = random.uniform(1, 5)
-        print(f"Sleeping for {sleep_time} seconds...")
-        time.sleep(sleep_time)
+
         if text is not None:
             
             res= speak(text,'',speaker,idx)
