@@ -11,3 +11,5 @@ https://github.com/rsxdalv/tts-generation-webui
 
 openai whisper 
 d-did
+
+https://github.com/luoyily/MoeTTS
