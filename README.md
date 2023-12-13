@@ -13,3 +13,6 @@ openai whisper
 d-did
 
 https://github.com/luoyily/MoeTTS
+
+
+https://github.com/erquren/genshinvideotool/blob/main/voice_generate.py
